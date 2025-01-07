@@ -17,8 +17,8 @@ switch ($request_method) {
         break;
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
-        $stmt = $conn->prepare("INSERT INTO Programs (program_name) VALUES (?)");
-        $stmt->bind_param("s", $data['program_name']);
+        $stmt = $conn->prepare("INSERT INTO Programs (program_id, program_name, description) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $data['program_id'], $data['program_name'], $data['description']);
         if ($stmt->execute()) {
             echo json_encode(["message" => "Program created successfully."]);
         } else {
