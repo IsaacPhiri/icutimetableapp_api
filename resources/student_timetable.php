@@ -47,7 +47,6 @@ INNER JOIN
 WHERE 
     enrollments.user_id = 3;");
             $timetables = $result->fetch_all(MYSQLI_ASSOC);
-            print_r($timetables);
             echo json_encode($timetables);
         }
         break;
