@@ -45,7 +45,7 @@ INNER JOIN
 INNER JOIN 
     enrollments ON enrollments.program_id = courses.program_id
 WHERE 
-    enrollments.user_id = $user_id;");
+    enrollments.user_id = 3;");
             $timetables = $result->fetch_all(MYSQLI_ASSOC);
             echo json_encode($timetables);
         }
