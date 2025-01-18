@@ -5,10 +5,21 @@ require_once '../db.php';
 // Handle API requests
 switch ($request_method) {
     case 'GET':
-        // Fetch users
-        $result = $conn->query("SELECT * FROM Users");
-        $users = $result->fetch_all(MYSQLI_ASSOC);
-        echo json_encode($users);
+        if (isset($_GET['id'])) {
+            // Fetch a single user by ID
+            $id = $_GET['id'];
+            $stmt = $conn->prepare("SELECT * FROM Users WHERE user_id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
+            echo json_encode($user);
+        } else {
+            // Fetch all users
+            $result = $conn->query("SELECT * FROM Users");
+            $users = $result->fetch_all(MYSQLI_ASSOC);
+            echo json_encode($users);
+        }
         break;
 
     case 'POST':
