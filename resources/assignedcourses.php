@@ -2,14 +2,13 @@
 
 require_once '../db.php';
 
-// Assuming you have a way to get the logged-in lecturer's ID, e.g., from session or token
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(["error" => "User not logged in."]);
+// Get user_id from the query string
+$user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
+
+if (!$user_id) {
+    echo json_encode(["error" => "No user ID provided."]);
     exit;
 }
-
-$user_id = $_SESSION['user_id'];
 
 // Handle API requests
 switch ($request_method) {
@@ -31,8 +30,16 @@ switch ($request_method) {
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        $courses = $result->fetch_all(MYSQLI_ASSOC);
-        echo json_encode($courses);
+        
+        
+            if ($result->num_rows > 0) {
+                $courses = $result->fetch_all(MYSQLI_ASSOC);
+                echo json_encode($courses);
+            } else {
+                echo json_encode([]);
+            }
+
+            $stmt->close();
         break;
     default:
         echo json_encode(["error" => "Invalid request method."]);
