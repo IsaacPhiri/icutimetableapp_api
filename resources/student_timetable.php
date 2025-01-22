@@ -2,14 +2,14 @@
 
 require_once '../db.php';
 
-// Assuming you have a way to get the logged-in user's ID, e.g., from session or token
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(["error" => "User not logged in."]);
+// Get user_id from the query string
+$user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
+
+if (!$user_id) {
+    echo json_encode(["error" => "No user ID provided."]);
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
 
 // Handle API requests
 switch ($request_method) {
@@ -34,7 +34,7 @@ switch ($request_method) {
             WHERE 
                 enrollments.user_id = ?
         ");
-        $stmt->bind_param("i", $user_id);
+        $stmt->bind_param("s", $user_id);
         $stmt->execute();
         $result = $stmt->get_result();
         $timetables = $result->fetch_all(MYSQLI_ASSOC);
