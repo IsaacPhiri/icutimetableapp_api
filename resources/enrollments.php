@@ -1,18 +1,18 @@
 <?php
 require_once '../db.php';
 
-// Assuming you have a way to get the logged-in user's ID, e.g., from session or token
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(["error" => "User not logged in."]);
+// Get user_id from the query string
+$user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
+
+if (!$user_id) {
+    echo json_encode(["error" => "No user ID provided."]);
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
 
 switch ($request_method) {
     case 'GET':
-        if ($id) { // Fetch courses for a specific student and program
+        if ($user_id) { // Fetch courses for a specific student and program
             $stmt = $conn->prepare("
                 SELECT 
                     Courses.course_id, 
@@ -24,7 +24,7 @@ switch ($request_method) {
                 INNER JOIN Courses ON Programs.program_id = Courses.program_id
                 WHERE Enrollments.user_id = ?
             ");
-            $stmt->bind_param("i", $id);
+            $stmt->bind_param("s", $user_id);
             $stmt->execute();
             $result = $stmt->get_result();
             $courses = $result->fetch_all(MYSQLI_ASSOC);
