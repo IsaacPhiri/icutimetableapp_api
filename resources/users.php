@@ -2,6 +2,7 @@
 
 require_once '../db.php';
 
+
 // Handle API requests
 switch ($request_method) {
     case 'GET':
