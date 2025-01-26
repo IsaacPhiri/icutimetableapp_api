@@ -15,14 +15,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 try {
-    // Initialize router (you'll need to implement this)
     $router = new \Core\Router();
     
     // Apply middleware
     (new \Middleware\AuthMiddleware())->handle();
     
+    // Define routes
+    $router->addRoute('GET', '/users', function() {
+        $controller = new \Controllers\UserController();
+        return $controller->index();
+    });
+    
+    // Add more routes here...
+    
     // Route the request
-    $router->dispatch();
+    echo $router->dispatch();
 } catch (\Exception $e) {
     http_response_code(500);
     echo json_encode([
